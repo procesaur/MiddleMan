@@ -1,8 +1,9 @@
 {
+  "log": "",
   "services": {
     "solr": {
       "processors": ["solr"],
-      "target" : "127.0.0.1:8983"
+      "target" : "http://10.100.0.82:8983/solr/rgf"
     }
   }
 }

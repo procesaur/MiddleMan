@@ -1,23 +1,30 @@
-from flask import Flask, request
+from flask import Flask, request as flask_req, Response
 from os import environ
-from helper import cfg
-from rq_handler import process_req
-from redisworks import redis_q as q
+from helper import cfg, log_stuff, send_request
+
+import processors
 
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
 
 
-@app.route('/<service>', methods=['POST', 'GET'])
-def api(service):
+@app.route('/', defaults={'path': ''})
+@app.route('/<service>/<path:path>', methods=['GET', 'POST'])
+def api(service, path):
+    request = flask_req
     if service in cfg["services"]:
-        function, args = process_req(request, service)
-        if q:
-            job = q.enqueue(function, args)
-            return "sent to redis que, id:" + str(job.get_id())
-        else:
-            return function(args)
+
+        required_processing = cfg["services"][service]["processors"]
+        target = cfg["services"][service]["target"] + path
+
+        log_stuff([request.remote_addr, ";".join(request.args)])
+
+        for proc_name in required_processing:
+            processor = getattr(processors, proc_name)
+            request = processor(request)
+
+    return send_request(request, target)
 
 
 if __name__ == "__main__":

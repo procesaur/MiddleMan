@@ -1,6 +1,7 @@
-from os import remove
 from json import load
 from os import path as px
+from requests import request as rr
+from flask import Response
 
 
 def load_conf(path=None):
@@ -13,13 +14,6 @@ def load_conf(path=None):
 cfg = load_conf()
 
 
-def tryDel(file):
-    try:
-        remove(file)
-    except:
-        pass
-
-
 def log_stuff(stuff):
     if "log" in cfg and cfg["log"]:
         try:
@@ -29,10 +23,22 @@ def log_stuff(stuff):
             pass
 
 
-def get_return_type(service):
-     if "return" not in cfg["services"][service]:
-         return None
-     return cfg["services"][service]["return"]
+def send_request(request, target):
+    res = rr(
+        method=request.method,
+        url=target,
+        headers={k: v for k, v in request.headers if k.lower() == 'host'},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False,
+    )
 
+    # region exlcude some keys in :res response
+    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
+    headers = [
+        (k, v) for k, v in res.raw.headers.items()
+        if k.lower() not in excluded_headers
+    ]
 
-
+    response = Response(res.content, res.status_code, headers)
+    return response
