@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request
 from os import environ
 from helper import cfg
 from rq_handler import process_req
@@ -12,7 +12,7 @@ app.config["DEBUG"] = False
 @app.route('/<service>', methods=['POST', 'GET'])
 def api(service):
     if service in cfg["services"]:
-        function, args = process_req(request)
+        function, args = process_req(request, service)
         if q:
             job = q.enqueue(function, args)
             return "sent to redis que, id:" + str(job.get_id())
