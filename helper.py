@@ -23,12 +23,12 @@ def log_stuff(stuff):
             pass
 
 
-def send_request(request, target):
+def send_request(request, params, target):
     res = rr(
         method=request.method,
         url=target,
         headers={k: v for k, v in request.headers if k.lower() == 'host'},
-        data=request.get_data(),
+        data=params,
         cookies=request.cookies,
         allow_redirects=False,
     )
@@ -42,3 +42,10 @@ def send_request(request, target):
 
     response = Response(res.content, res.status_code, headers)
     return response
+
+
+def params_from_req(req):
+    query_parameters = req.args
+    if len(query_parameters) == 0:
+        query_parameters = req.form
+    return query_parameters

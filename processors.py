@@ -1,4 +1,4 @@
 
 
-def solr(req):
-    return req
+def solr(params):
+    return params

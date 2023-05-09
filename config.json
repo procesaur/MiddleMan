@@ -3,7 +3,7 @@
   "services": {
     "solr": {
       "processors": ["solr"],
-      "target" : "http://10.100.0.82:8983/solr/rgf"
+      "target" : "http://10.100.0.82:8983/solr/"
     }
   }
 }
