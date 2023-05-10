@@ -1,8 +1,21 @@
 {
   "log": "",
+  "redis": {
+    "url": "redis://127.0.0.1",
+    "port": "6379",
+    "on": 0
+  },
   "services": {
     "solr": {
-      "processors": ["solr"],
+      "paths" : {
+        "select": {
+          "processors": ["sort_default","add_solr_highlight"]
+        },
+        "update" : {
+          "processors": ["index_media"],
+          "redis": 1
+        }
+      },
       "target" : "http://10.100.0.82:8983/solr/"
     }
   }

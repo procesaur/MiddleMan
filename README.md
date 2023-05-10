@@ -1,1 +1,1 @@
-# Requiamo - [Requ]est [I]nterceptor [a]nd [Mo]derator
+# MiddleMan - Application for custom web request interception and moderation

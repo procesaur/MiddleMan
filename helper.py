@@ -1,7 +1,5 @@
 from json import load
 from os import path as px
-from requests import request as rr
-from flask import Response
 
 
 def load_conf(path=None):
@@ -23,29 +21,14 @@ def log_stuff(stuff):
             pass
 
 
-def send_request(request, params, target):
-    res = rr(
-        method=request.method,
-        url=target,
-        headers={k: v for k, v in request.headers if k.lower() == 'host'},
-        data=params,
-        cookies=request.cookies,
-        allow_redirects=False,
-    )
-
-    # region exlcude some keys in :res response
-    excluded_headers = ['content-encoding', 'content-length', 'transfer-encoding', 'connection']
-    headers = [
-        (k, v) for k, v in res.raw.headers.items()
-        if k.lower() not in excluded_headers
-    ]
-
-    response = Response(res.content, res.status_code, headers)
-    return response
+def processors4path(service, path):
+    required_processing = []
+    for_redis = False
+    for pathx in cfg["services"][service]["paths"]:
+        if pathx in path:
+            required_processing += cfg["services"][service]["paths"][pathx]["processors"]
+            if "redis" in cfg["services"][service]["paths"][pathx]:
+                for_redis = True
+    return required_processing, for_redis
 
 
-def params_from_req(req):
-    query_parameters = req.args
-    if len(query_parameters) == 0:
-        query_parameters = req.form
-    return query_parameters
