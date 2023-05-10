@@ -22,8 +22,8 @@ def sort_default(params, data):
 
 def index_media(params, data):
 
-    texase_addr = "http://127.0.0.1:5001/api/"
-    omeka_api_addr = "http://127.0.0.1/api/"
+    texase_addr = "http://10.100.0.82:5001/api/"
+    omeka_api_addr = "http://10.100.0.82/api/"
 
     def txt_from_file(filepath):
         return get("{}extract?file={}".format(texase_addr, filepath)).text
@@ -50,7 +50,7 @@ def index_media(params, data):
     for doc in docs:
         item_id = get_id(doc["field"])
         filepaths = get_filepaths(item_id)
-        filepaths = [x.replace("http://10.100.0.82", "/var/www/html") for x in filepaths]
+        filepaths = [x.replace("http://127.0.0.1", "/var/www/html") for x in filepaths]
         media_txt = ""
         hasMedia = []
 

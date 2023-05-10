@@ -43,6 +43,9 @@ def send_request(request, target, params=None, data=None):
     if not data:
         data = request.get_data()
 
+    if isinstance(data, str):
+        data = data.encode('utf-8')
+
     res = rr(
         method=request.method,
         url=target,
@@ -51,6 +54,7 @@ def send_request(request, target, params=None, data=None):
         params=params,
         cookies=request.cookies,
         allow_redirects=False,
+
     )
 
     headers = [
@@ -58,4 +62,5 @@ def send_request(request, target, params=None, data=None):
     ]
 
     response = Response(res.content, res.status_code, headers)
+
     return response

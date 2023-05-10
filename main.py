@@ -38,6 +38,6 @@ def api(service, path):
 
 
 if __name__ == "__main__":
-    port = int(environ.get("PORT", 5000))
+    port = int(environ.get("PORT", 5002))
     app.run(host='0.0.0.0', port=port)
 
