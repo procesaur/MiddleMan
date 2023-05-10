@@ -26,7 +26,7 @@ def index_media(params, data):
     omeka_api_addr = "http://127.0.0.1/api/"
 
     def txt_from_file(filepath):
-        return get("{}extract?file='{}'".format(texase_addr, filepath)).text
+        return get("{}extract?file={}".format(texase_addr, filepath)).text
 
     def renew_file(filepath, idx, repo):
         get("{}renew?file={}&id={}&repo={}".format(texase_addr, filepath, idx, repo))
