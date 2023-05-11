@@ -37,7 +37,7 @@ def req2args(req, target):
 def process_args_and_send(args):
     params, data, method, headers, cookies, target, required_processing = args
 
-    params_o, data_o = params.copy(), data.copy()
+    params_o, data_o = params[:], data[:]
 
     for proc_name in required_processing:
         processor = getattr(processors, proc_name)

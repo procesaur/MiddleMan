@@ -29,7 +29,7 @@ def api(service, path):
         return send_request(args)
 
     args += (required_processing,)
-    log_stuff([flask_req.remote_addr, ";".join(args)])
+    log_stuff([flask_req.remote_addr, ";".join([str(x) for x in args])])
 
     if q and for_redis:
         job = q.enqueue(process_args_and_send, args)
