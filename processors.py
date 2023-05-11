@@ -1,6 +1,7 @@
 from os import path as px
 from xmltodict import parse, unparse
 from requests import get
+from dateutil.parser import parse
 
 
 def add_solr_highlight(params, data):
@@ -17,6 +18,13 @@ def add_solr_highlight(params, data):
 def sort_default(params, data):
     if params["q"] == "*:*":
         params["sort"] = "id desc"
+    return params, data
+
+
+def normalize_date(params, data):
+
+    datestring = ""
+    year = str(parse(datestring, fuzzy=True).year)
     return params, data
 
 
@@ -44,14 +52,15 @@ def index_media(params, data):
         media = get(omeka_api_addr + "media?item_id=" + idx).json()
         return [x["o:original_url"] for x in media]
 
+    data_json = parse(data)
+
     try:
-        data_json = parse(data)
         if type(data_json["update"]["add"]["doc"]) is dict:
             docs = [data_json["update"]["add"]["doc"]]
         else:
             docs = data_json["update"]["add"]["doc"]
     except:
-        return params, data
+        docs = []
 
     newdocs = []
     for doc in docs:
