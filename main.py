@@ -2,10 +2,16 @@ from flask import Flask, request as flask_req
 from os import environ
 from helper import cfg, processors4path, log_stuff
 from rq_handler import process_args_and_send, send_request, req2args
+from rq import Connection, Worker, Queue
 
 
 try:
-    from redisworks import q
+    from redisworks import q, conn
+
+    with Connection(conn):
+        worker = Worker(list(map(Queue, ['default'])))
+        worker.work()
+        
 except ImportError:
     q = None
 

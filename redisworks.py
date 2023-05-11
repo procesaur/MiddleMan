@@ -1,5 +1,5 @@
 import redis
-from rq import Worker, Queue, Connection
+from rq import Queue
 from helper import cfg
 
 
@@ -24,10 +24,4 @@ def redis_queue():
 
 
 q = redis_queue()
-listen = ['default']
 conn = redis_conn()
-redis_q = q
-
-with Connection(conn):
-    worker = Worker(list(map(Queue, listen)))
-    worker.work()
