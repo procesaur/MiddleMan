@@ -5,7 +5,6 @@ from request_handler import process_args_and_send, send_request, req2args
 
 try:
     from redisworks import q
-    system("rq worker")
 except ImportError:
     q = None
 
