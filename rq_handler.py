@@ -1,5 +1,4 @@
 import processors
-from helper import log_stuff
 from requests import request as rr
 from flask import Response
 
@@ -24,37 +23,50 @@ def req2file(req):
     return file_bytes, filename
 
 
-def process_request(args):
-    flask_req, required_processing, target = args
-    params = params_from_req(flask_req).to_dict()
-    data = flask_req.get_data()
-    log_stuff([flask_req.remote_addr, ";".join(params)])
+def req2args(req, target):
+    method = req.method
+    headers = {k: v for k, v in req.headers}
+    cookies = req.cookies
+
+    params = params_from_req(req).to_dict()
+    data = req.get_data()
+    args = params, data, method, headers, cookies, target
+    return args
+
+
+def process_args_and_send(args):
+    params, data, method, headers, cookies, target, required_processing = args
+
+    params_o, data_o = params.copy(), data.copy()
 
     for proc_name in required_processing:
         processor = getattr(processors, proc_name)
         params, data = processor(params, data)
 
-    return send_request(flask_req, target, params, data)
-
-
-def send_request(request, target, params=None, data=None):
     if not params:
-        params = params_from_req(request)
+        params = params_o
     if not data:
-        data = request.get_data()
+        data = data_o
+
+    args = params, data, method, headers, cookies, target
+
+    return send_request(args)
+
+
+def send_request(args):
+    params, data, method, headers, cookies, target = args
 
     if isinstance(data, str):
         data = data.encode('utf-8')
 
     res = rr(
-        method=request.method,
+        method=method,
         url=target,
-        headers={k: v for k, v in request.headers},
+        headers=headers,
         data=data,
         params=params,
-        cookies=request.cookies,
+        cookies=cookies,
         allow_redirects=False,
-
     )
 
     headers = [

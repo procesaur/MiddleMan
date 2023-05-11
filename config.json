@@ -3,7 +3,7 @@
   "redis": {
     "url": "redis://127.0.0.1",
     "port": "6379",
-    "on": 0
+    "on": 1
   },
   "services": {
     "solr": {
@@ -16,7 +16,7 @@
           "redis": 1
         }
       },
-      "target" : "http://10.100.0.82:8983/solr/"
+      "target" : "http://10.100.0.82:8983/solr/",
     }
   }
 }

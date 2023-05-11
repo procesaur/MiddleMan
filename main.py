@@ -1,7 +1,7 @@
 from flask import Flask, request as flask_req
 from os import environ
-from helper import cfg, processors4path
-from rq_handler import process_request, send_request
+from helper import cfg, processors4path, log_stuff
+from rq_handler import process_args_and_send, send_request, req2args
 
 
 try:
@@ -22,19 +22,20 @@ def api(service, path):
         return None
 
     target = cfg["services"][service]["target"] + path
-
+    args = req2args(flask_req, target)
     required_processing, for_redis = processors4path(service, path)
+
     if len(required_processing) == 0:
-        return send_request(flask_req, target)
+        return send_request(args)
 
-    else:
-        args = flask_req, required_processing, target
+    args += required_processing
+    log_stuff([flask_req.remote_addr, ";".join(args)])
 
-        if q and for_redis:
-            job = q.enqueue(process_request, args)
-            return "sent to redis que, id:" + str(job.get_id())
-        else:
-            return process_request(args)
+    if q and for_redis:
+        job = q.enqueue(process_args_and_send, args)
+        return "sent to redis que, id:" + str(job.get_id())
+
+    return process_args_and_send(args)
 
 
 if __name__ == "__main__":
