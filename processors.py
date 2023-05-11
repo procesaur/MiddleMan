@@ -55,15 +55,14 @@ def index_media(params, data):
         media = get(omeka_api_addr + "media?item_id=" + idx).json()
         return [x["o:original_url"] for x in media]
 
-    data_json = parse(data)
-
     try:
+        data_json = parse(data)
         if type(data_json["update"]["add"]["doc"]) is dict:
             docs = [data_json["update"]["add"]["doc"]]
         else:
             docs = data_json["update"]["add"]["doc"]
     except:
-        docs = []
+        return params, data
 
     newdocs = []
     for doc in docs:
