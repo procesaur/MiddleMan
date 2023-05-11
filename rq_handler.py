@@ -1,6 +1,7 @@
 import processors
 from requests import request as rr
 from flask import Response
+from copy import deepcopy
 
 
 def params_from_req(req):
@@ -37,7 +38,7 @@ def req2args(req, target):
 def process_args_and_send(args):
     params, data, method, headers, cookies, target, required_processing = args
 
-    params_o, data_o = params[:], data[:]
+    params_o, data_o = deepcopy(params), deepcopy(data)
 
     for proc_name in required_processing:
         processor = getattr(processors, proc_name)
