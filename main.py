@@ -3,21 +3,38 @@ from os import environ
 from helper import cfg, processors4path, log_stuff
 from rq_handler import process_args_and_send, send_request, req2args
 from rq import Connection, Worker, Queue
-
-
-try:
-    from redisworks import q, conn
-
-    with Connection(conn):
-        worker = Worker(list(map(Queue, ['default'])))
-        worker.work()
-        
-except ImportError:
-    q = None
-
+import redis
 
 app = Flask(__name__)
 app.config["DEBUG"] = False
+
+try:
+    def redis_conn():
+        redis_settings = cfg["redis"]
+        if redis_settings["on"] < 1:
+            return None
+        else:
+            redis_url = redis_settings["url"] + ":" + redis_settings["port"]
+            conn = redis.from_url(redis_url)
+            return conn
+
+
+    def redis_queue():
+        redis_settings = cfg["redis"]
+        if redis_settings["on"] < 1:
+            return None
+        else:
+            conn = redis_conn()
+            q = Queue(connection=conn)
+            return q
+
+
+    q = redis_queue()
+    conn = redis_conn()
+
+
+except ImportError:
+    q = None
 
 
 @app.route('/', defaults={'path': ''})
