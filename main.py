@@ -32,6 +32,9 @@ try:
     q = redis_queue()
     conn = redis_conn()
 
+    with Connection(conn):
+        worker = Worker(list(map(Queue, ['default'])))
+        worker.work()
 
 except ImportError:
     q = None
