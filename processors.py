@@ -1,7 +1,6 @@
 from os import path as px
 from xmltodict import parse, unparse
 from requests import get
-from dateutil.parser import parse
 
 
 def add_solr_highlight(params, data):
@@ -30,16 +29,6 @@ def index_media(params, data):
     texase_addr = ip + ":5001/api/"
     omeka_api_addr = ip + "/api/"
 
-    def normalize_dates(src):
-        try:
-            for i, field in enumerate(src):
-                if field["@name"] == "dcterms_issued_txt":
-                    new = parse(src[i]["#text"], fuzzy=True).year
-                    if 1600 < new < 2300:
-                        src[i]["#text"] = str(new)
-        except:
-            pass
-        return src
 
     def txt_from_file(filepath):
         return get("{}extract?file={}".format(texase_addr, filepath)).text
@@ -71,8 +60,6 @@ def index_media(params, data):
         filepaths = [x.replace(ip, files_dir) for x in filepaths]
         media_txt = ""
         hasMedia = []
-
-        doc["field"] = normalize_dates(doc["field"])
 
         for filepath in filepaths:
             path, ext = px.splitext(filepath)
