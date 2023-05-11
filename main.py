@@ -28,7 +28,7 @@ def api(service, path):
     if len(required_processing) == 0:
         return send_request(args)
 
-    args += required_processing
+    args += (required_processing,)
     log_stuff([flask_req.remote_addr, ";".join(args)])
 
     if q and for_redis:
