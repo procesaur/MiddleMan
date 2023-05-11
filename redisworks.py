@@ -24,4 +24,3 @@ def redis_queue():
 
 
 q = redis_queue()
-conn = redis_conn()
