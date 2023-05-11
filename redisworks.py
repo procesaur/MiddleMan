@@ -24,12 +24,10 @@ def redis_queue():
 
 
 q = redis_queue()
+listen = ['default']
+conn = redis_conn()
+redis_q = q
 
-if __name__ == '__main__':
-    listen = ['default']
-    conn = redis_conn()
-    redis_q = q
-
-    with Connection(conn):
-        worker = Worker(list(map(Queue, listen)))
-        worker.work()
+with Connection(conn):
+    worker = Worker(list(map(Queue, listen)))
+    worker.work()
