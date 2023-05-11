@@ -1,5 +1,5 @@
 from flask import Flask, request as flask_req
-from os import environ, system
+from os import environ
 from helper import cfg, processors4path, log_stuff
 from request_handler import process_args_and_send, send_request, req2args
 

@@ -45,10 +45,13 @@ def index_media(params, data):
 
     data_json = parse(data)
 
-    if type(data_json["update"]["add"]["doc"]) is dict:
-        docs = [data_json["update"]["add"]["doc"]]
-    else:
-        docs = data_json["update"]["add"]["doc"]
+    try:
+        if type(data_json["update"]["add"]["doc"]) is dict:
+            docs = [data_json["update"]["add"]["doc"]]
+        else:
+            docs = data_json["update"]["add"]["doc"]
+    except:
+        docs = []
 
     newdocs = []
     for doc in docs:
@@ -71,7 +74,8 @@ def index_media(params, data):
         doc["field"].append({'@name': 'media_txt', '#text': media_txt})
         newdocs.append(doc)
 
-    data_json["update"]["add"]["doc"] = newdocs
+    if docs:
+        data_json["update"]["add"]["doc"] = newdocs
 
     data = unparse(data_json)
     return params, data
