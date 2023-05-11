@@ -1,12 +1,11 @@
 from flask import Flask, request as flask_req
-from os import environ
+from os import environ, system
 from helper import cfg, processors4path, log_stuff
 from request_handler import process_args_and_send, send_request, req2args
-from rq import Worker
+
 try:
     from redisworks import q
-    worker = Worker([q], connection=q.connection)
-    worker.work()
+    system("rq worker")
 except ImportError:
     q = None
 
