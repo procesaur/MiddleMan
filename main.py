@@ -31,7 +31,7 @@ def api(service, path):
     log_stuff([flask_req.remote_addr, ";".join([str(x) for x in args])])
 
     if q and for_redis:
-        job = q.enqueue(process_args_and_send, args, job_timeout=600)
+        job = q.enqueue(process_args_and_send, args)
         return "sent to redis que, id:" + str(job.get_id())
 
     return process_args_and_send(args)
@@ -40,4 +40,3 @@ def api(service, path):
 if __name__ == "__main__":
     port = int(environ.get("PORT", 5002))
     app.run(host='0.0.0.0', port=port)
-
