@@ -78,7 +78,7 @@ def index_media(params, data):
         media_txt = ""
         hasMedia = []
 
-        #doc["field"] = extract_year(doc["field"])
+        doc["field"] = extract_year(doc["field"])
 
         for filepath in filepaths:
             path, ext = px.splitext(filepath)
