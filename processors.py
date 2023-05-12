@@ -1,7 +1,7 @@
 from os import path as px
 from xmltodict import parse, unparse
 from requests import get
-from dateutil.parser import parse
+from re import search
 
 
 def add_solr_highlight(params, data):
@@ -22,9 +22,8 @@ def sort_default(params, data):
 
 
 def normalize_date(params, data):
-
     datestring = ""
-    year = str(parse(datestring, fuzzy=True).year)
+    year = search(r"[12][0-9]{3}", datestring)
     return params, data
 
 
