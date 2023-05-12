@@ -37,7 +37,6 @@ def index_media(params, data):
     texase_addr = ip + ":5001/api/"
     omeka_api_addr = ip + "/api/"
 
-
     def txt_from_file(filepath):
         return get("{}extract?file={}".format(texase_addr, filepath)).text
 
@@ -54,13 +53,19 @@ def index_media(params, data):
 
     data_json = parse(data)
 
-    try:
-        if type(data_json["update"]["add"]["doc"]) is dict:
-            docs = [data_json["update"]["add"]["doc"]]
-        else:
-            docs = data_json["update"]["add"]["doc"]
-    except:
-        docs = []
+    if "update" not in data_json.keys():
+        return params, data
+
+    if "add" not in data_json["update"].keys():
+        return params, data
+
+    if "doc" not in data_json["update"]["add"].keys():
+        return params, data
+
+    if type(data_json["update"]["add"]["doc"]) is dict:
+        docs = [data_json["update"]["add"]["doc"]]
+    else:
+        docs = data_json["update"]["add"]["doc"]
 
     newdocs = []
     for doc in docs:
