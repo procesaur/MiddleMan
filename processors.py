@@ -21,20 +21,18 @@ def sort_default(params, data):
     return params, data
 
 
-def normalize_date(params, data):
-    datestring = ""
-    year = search(r"[12][0-9]{3}", datestring)
-    return params, data
-
-
 def index_media(params, data):
 
     ip = "http://127.0.0.1"
     files_dir = "/var/www/html"
     repo = "example_rgf"
+    date_field = "dcterms_issued_txt"
 
     texase_addr = ip + ":5001/api/"
     omeka_api_addr = ip + "/api/"
+
+    def year_from_date(datestr):
+        return search(r"[12][0-9]{3}", datestr).group()
 
     def txt_from_file(filepath):
         return get("{}extract?file={}".format(texase_addr, filepath)).text
@@ -49,6 +47,15 @@ def index_media(params, data):
     def get_filepaths(idx):
         media = get(omeka_api_addr + "media?item_id=" + idx).json()
         return [x["o:original_url"] for x in media]
+
+    def extract_year(doc):
+        dateind = [i for i, x in enumerate(doc) if x["@name"] == date_field]
+        if not dateind:
+            return doc
+        dateindex = dateind[0]
+        year = year_from_date(doc[dateindex]["#text"])
+        doc.append({'@name': 'year', '#text': year})
+        return doc
 
     data_json = parse(data)
 
@@ -73,6 +80,8 @@ def index_media(params, data):
         filepaths = [x.replace(ip, files_dir) for x in filepaths]
         media_txt = ""
         hasMedia = []
+
+        doc["field"] = extract_year(doc["field"])
 
         for filepath in filepaths:
             path, ext = px.splitext(filepath)
