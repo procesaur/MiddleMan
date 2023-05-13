@@ -9,7 +9,7 @@
     "solr": {
       "paths" : {
         "select": {
-          "processors": ["sort_default","add_solr_highlight"]
+          "processors": ["sort_default"]
         },
         "update" : {
           "processors": ["index_media"],

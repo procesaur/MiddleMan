@@ -30,5 +30,3 @@ def processors4path(service, path):
             if "redis" in cfg["services"][service]["paths"][pathx]:
                 for_redis = True
     return required_processing, for_redis
-
-

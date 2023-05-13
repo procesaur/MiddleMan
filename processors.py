@@ -22,7 +22,6 @@ def sort_default(params, data):
 
 
 def index_media(params, data):
-
     ip = "http://127.0.0.1"
     files_dir = "/var/www/html"
     repo = "example_rgf"

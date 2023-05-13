@@ -1,6 +1,6 @@
-import redis
 from rq import Queue
 from helper import cfg
+import redis
 
 
 def redis_conn():

@@ -70,10 +70,6 @@ def send_request(args):
         allow_redirects=False,
     )
 
-    headers = [
-        (k, v) for k, v in res.raw.headers.items()
-    ]
-
+    headers = [(k, v) for k, v in res.raw.headers.items()]
     response = Response(res.content, res.status_code, headers)
-
     return response
