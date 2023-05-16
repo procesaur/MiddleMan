@@ -19,7 +19,7 @@ def redis_queue():
         return None
     else:
         conn = redis_conn()
-        q = Queue(connection=conn, default_timeout=600)
+        q = Queue(connection=conn, default_timeout=3600)
         return q
 
 
