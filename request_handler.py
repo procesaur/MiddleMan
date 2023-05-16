@@ -5,9 +5,9 @@ from copy import deepcopy
 
 
 def params_from_req(req):
-    query_parameters = req.args
+    query_parameters = req.args.to_dict(flat=False)
     if len(query_parameters) == 0:
-        query_parameters = req.form
+        query_parameters = req.form.to_dict(flat=False)
     return query_parameters
 
 
@@ -29,7 +29,7 @@ def req2args(req, target):
     headers = {k: v for k, v in req.headers}
     cookies = req.cookies
 
-    params = params_from_req(req).to_dict()
+    params = params_from_req(req)
     data = req.get_data()
     args = params, data, method, headers, cookies, target
     return args
