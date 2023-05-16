@@ -57,8 +57,8 @@ def process_args_and_send(args):
 def send_request(args):
     params, data, method, headers, cookies, target = args
 
-    if isinstance(data, str):
-        data = data.encode('utf-8')
+    #if isinstance(data, str):
+        #data = data.encode('utf-8')
 
     res = rr(
         method=method,

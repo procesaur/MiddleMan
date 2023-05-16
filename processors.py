@@ -37,8 +37,11 @@ def index_media(params, data):
         get("{}renew?file={}&id={}&repo={}".format(texase_addr, filepath, idx, repo))
 
     def get_filepaths(idx):
-        media = get(omeka_api_addr + "media?item_id=" + idx).json()
-        return [x["o:original_url"] for x in media]
+        try:
+            media = get(omeka_api_addr + "media?item_id=" + idx).json()
+            return [x["o:original_url"] for x in media]
+        except:
+            return []
 
     data_json = loads(data)
 
@@ -48,38 +51,30 @@ def index_media(params, data):
     if "doc" not in data_json["add"].keys():
         return params, data
 
-    if type(data_json["add"]["doc"]) is dict:
-        docs = [data_json["add"]["doc"]]
-    else:
-        docs = data_json["add"]["doc"]
+    doc = data_json["add"]["doc"]
 
-    newdocs = []
-    for doc in docs:
-        item_id = doc["id"].split("items/")[1]
-        filepaths = get_filepaths(item_id)
-        filepaths = [x.replace(ip, files_dir) for x in filepaths]
-        media_txt = ""
-        hasMedia = []
+    item_id = doc["id"].split("items/")[1]
+    filepaths = get_filepaths(item_id)
+    filepaths = [x.replace(ip, files_dir) for x in filepaths]
+    media_txt = ""
+    hasMedia = []
 
-        if date_field in doc:
-            year = search(r"[12][0-9]{3}", doc[date_field]).group()
-            doc["year_i"] = year
+    if date_field in doc:
+        year = search(r"[12][0-9]{3}", doc[date_field]).group()
+        doc["year_i"] = year
 
-        for filepath in filepaths:
-            path, ext = px.splitext(filepath)
-            hasMedia.append(ext[1:])
-            renew_file(filepath, item_id, repo)
-            media_txt += "\n" + txt_from_file(filepath)
-            doc["media_txt"].append(media_txt)
+    for filepath in filepaths:
+        path, ext = px.splitext(filepath)
+        hasMedia.append(ext[1:])
+        renew_file(filepath, item_id, repo)
+        media_txt += "\n" + txt_from_file(filepath)
+        doc["media_txt"].append(media_txt)
 
-        hasMedia = list(set(hasMedia))
-        for hm in hasMedia:
-            doc["hasMedia"].append(hm)
+    hasMedia = list(set(hasMedia))
+    for hm in hasMedia:
+        doc["hasMedia"].append(hm)
 
-        newdocs.append(doc)
-
-    if docs:
-        data_json["add"]["doc"] = newdocs
+    data_json["add"]["doc"] = doc
 
     data = dumps(data_json)
     return params, data
