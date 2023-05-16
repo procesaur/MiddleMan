@@ -50,7 +50,7 @@ def index_media(params, data):
             return doc
         dateindex = dateind[0]
         year = search(r"[12][0-9]{3}", doc[dateindex]["#text"]).group()
-        doc.append({'@name': 'year', '#text': year})
+        doc.append({'@name': 'year_txt', '#text': year})
         return doc
 
     data_json = parse(data)
