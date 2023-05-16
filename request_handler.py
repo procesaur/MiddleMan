@@ -30,7 +30,7 @@ def req2args(req, target):
     cookies = req.cookies
 
     params = params_from_req(req)
-    data = req.get_data()
+    data = req.get_data().decode("utf-8")
     args = params, data, method, headers, cookies, target
     return args
 
