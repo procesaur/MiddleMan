@@ -73,9 +73,7 @@ def index_media(params, data):
             renew_file(filepath, item_id, repo)
             doc["media_txt"].append(txt_from_file(filepath))
 
-        hasMedia = list(set(hasMedia))
-        for hm in hasMedia:
-            doc["hasMedia"].append(hm)
+        doc["hasMedia"] = list(set(hasMedia))
 
         data_json["add"]["doc"] = doc
         newadds.append(dumps(data_json))
