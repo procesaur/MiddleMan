@@ -60,7 +60,7 @@ def index_media(params, data):
         item_id = doc["id"].split("items/")[1]
         filepaths = get_filepaths(item_id)
         filepaths = [x.replace(ip, files_dir) for x in filepaths]
-        media_txt = ""
+        doc["media_txt"] = []
         hasMedia = []
 
         if date_field in doc:
@@ -71,8 +71,7 @@ def index_media(params, data):
             path, ext = px.splitext(filepath)
             hasMedia.append(ext[1:])
             renew_file(filepath, item_id, repo)
-            media_txt += "\n" + txt_from_file(filepath)
-            doc["media_txt"].append(media_txt)
+            doc["media_txt"].append(txt_from_file(filepath))
 
         hasMedia = list(set(hasMedia))
         for hm in hasMedia:
