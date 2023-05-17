@@ -64,8 +64,11 @@ def index_media(params, data):
         hasMedia = []
 
         if date_field in doc:
-            year = search(r"[12][0-9]{3}", doc[date_field]).group()
-            doc["year_i"] = year
+            try:
+                year = search(r"[12][0-9]{3}", doc[date_field]).group()
+                doc["year_i"] = year
+            except:
+                pass
 
         for filepath in filepaths:
             path, ext = px.splitext(filepath)
