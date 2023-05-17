@@ -43,38 +43,44 @@ def index_media(params, data):
         except:
             return []
 
-    data_json = loads(data)
+    adds = data.replace(",\"add\":", "}\n{\"add\":").split("\n")
+    print(len(adds))
+    newadds = []
+    for add in adds:
+        data_json = loads(add)
 
-    if "add" not in data_json.keys():
-        return params, data
+        if "add" not in data_json.keys():
+            return params, data
 
-    if "doc" not in data_json["add"].keys():
-        return params, data
+        if "doc" not in data_json["add"].keys():
+            return params, data
 
-    doc = data_json["add"]["doc"]
+        doc = data_json["add"]["doc"]
 
-    item_id = doc["id"].split("items/")[1]
-    filepaths = get_filepaths(item_id)
-    filepaths = [x.replace(ip, files_dir) for x in filepaths]
-    media_txt = ""
-    hasMedia = []
+        item_id = doc["id"].split("items/")[1]
+        filepaths = get_filepaths(item_id)
+        filepaths = [x.replace(ip, files_dir) for x in filepaths]
+        media_txt = ""
+        hasMedia = []
 
-    if date_field in doc:
-        year = search(r"[12][0-9]{3}", doc[date_field]).group()
-        doc["year_i"] = year
+        if date_field in doc:
+            year = search(r"[12][0-9]{3}", doc[date_field]).group()
+            doc["year_i"] = year
 
-    for filepath in filepaths:
-        path, ext = px.splitext(filepath)
-        hasMedia.append(ext[1:])
-        renew_file(filepath, item_id, repo)
-        media_txt += "\n" + txt_from_file(filepath)
-        doc["media_txt"].append(media_txt)
+        for filepath in filepaths:
+            path, ext = px.splitext(filepath)
+            hasMedia.append(ext[1:])
+            renew_file(filepath, item_id, repo)
+            media_txt += "\n" + txt_from_file(filepath)
+            doc["media_txt"].append(media_txt)
 
-    hasMedia = list(set(hasMedia))
-    for hm in hasMedia:
-        doc["hasMedia"].append(hm)
+        hasMedia = list(set(hasMedia))
+        for hm in hasMedia:
+            doc["hasMedia"].append(hm)
 
-    data_json["add"]["doc"] = doc
+        data_json["add"]["doc"] = doc
+        newadds.append(dumps(data_json))
 
-    data = dumps(data_json)
+    data = "\n".join(newadds).replace("}\n{\"add\":", ",\"add\":")
+
     return params, data

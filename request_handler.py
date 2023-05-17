@@ -37,7 +37,6 @@ def req2args(req, target):
 
 def process_args_and_send(args):
     params, data, method, headers, cookies, target, required_processing = args
-
     params_o, data_o = deepcopy(params), deepcopy(data)
 
     for proc_name in required_processing:
@@ -57,8 +56,8 @@ def process_args_and_send(args):
 def send_request(args):
     params, data, method, headers, cookies, target = args
 
-    #if isinstance(data, str):
-        #data = data.encode('utf-8')
+    if isinstance(data, str):
+        data = data.encode('utf-8')
 
     res = rr(
         method=method,
