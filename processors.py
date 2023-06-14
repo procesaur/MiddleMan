@@ -27,8 +27,16 @@ def index_media(params, data):
     repo = "example_rgf"
     date_field = "dcterms_issued_txt"
 
+
     texase_addr = ip + ":5001/api/"
     omeka_api_addr = ip + "/api/"
+    
+    key_identity = ""
+    key_credential = ""
+    if key_credential and key_identity:
+        api_key = "&key_identity=" + key_identity + "&key_credential=" + key_credential
+    else:
+        api_key = ""
 
     def txt_from_file(filepath):
         return get("{}extract?file={}".format(texase_addr, filepath)).text
@@ -38,7 +46,7 @@ def index_media(params, data):
 
     def get_filepaths(idx):
         try:
-            media = get(omeka_api_addr + "media?item_id=" + idx).json()
+            media = get(omeka_api_addr + "media?item_id=" + idx + api_key).json()
             return [x["o:original_url"] for x in media]
         except:
             return []
