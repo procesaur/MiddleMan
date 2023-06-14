@@ -46,10 +46,15 @@ def index_media(params, data):
 
     def get_filepaths(idx):
         try:
-            media = get(omeka_api_addr + "media?item_id=" + idx + api_key).json()
-            return [x["o:original_url"] for x in media]
+            media_json = get(omeka_api_addr + "media?item_id=" + idx + api_key).json()
+            media_public_json = get(omeka_api_addr + "media?item_id=" + idx).json()
+            
+            media = sorted([x["o:original_url"] for x in media_json])
+            media_public = sorted([x["o:original_url"] for x in media_public_json])
+            
+            return media, int(media==media_public)
         except:
-            return []
+            return [], 0
 
     adds = data.replace(",\"add\":", "}\n{\"add\":").split("\n")
     print(len(adds))
@@ -65,8 +70,11 @@ def index_media(params, data):
 
         doc = data_json["add"]["doc"]
 
-        item_id = doc["id"].split("items/")[1]
-        filepaths = get_filepaths(item_id)
+        try:
+            item_id = doc["id"].split("items/")[1]
+        except:
+            item_id = -1
+        filepaths, doc["private_media"] = get_filepaths(item_id)
         filepaths = [x.replace(ip, files_dir) for x in filepaths]
         doc["media_txt"] = []
         hasMedia = []
