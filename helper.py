@@ -33,6 +33,6 @@ def processors4path(service, path):
                     for_redis = True
     if required_processing and cfg["services"][service]["process_args"]:
         for processor in required_processing:
-            if cfg["services"][service]["process_args"][processor]:
+            if processor in cfg["services"][service]["process_args"]:
                 process_args[processor] = cfg["services"][service]["process_args"][processor]
     return required_processing, for_redis, process_args
