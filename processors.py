@@ -21,18 +21,17 @@ def sort_default(params, data):
     return params, data
 
 
-def index_media(params, data):
-    ip = "http://127.0.0.1"
-    files_dir = "/var/www/html"
-    repo = "example_rgf"
-    date_field = "dcterms_issued_txt"
+def index_media(params, data, process_params):
 
+    ip = process_params["ip"]
+    files_dir = process_params["files_dir"]
+    repo = process_params["repo"]
+    date_field = process_params["date_field"]
+    texase_addr = process_params["texase_addr"]
+    omeka_api_addr = process_params["omeka_api_addr"]
+    key_identity = process_params["key_identity"]
+    key_credential = process_params["key_credential"]
 
-    texase_addr = ip + ":5001/api/"
-    omeka_api_addr = ip + "/api/"
-    
-    key_identity = ""
-    key_credential = ""
     if key_credential and key_identity:
         api_key = "&key_identity=" + key_identity + "&key_credential=" + key_credential
     else:

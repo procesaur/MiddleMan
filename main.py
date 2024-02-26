@@ -22,12 +22,12 @@ def api(service, path):
 
     target = cfg["services"][service]["target"] + path
     args = req2args(flask_req, target)
-    required_processing, for_redis = processors4path(service, path)
+    required_processing, for_redis, process_args = processors4path(service, path)
 
     if len(required_processing) == 0:
         return send_request(args)
 
-    args += (required_processing,)
+    args += (required_processing, process_args)
     log_stuff([flask_req.remote_addr, ";".join([str(x) for x in args])])
 
     if q and for_redis:

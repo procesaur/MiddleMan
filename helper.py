@@ -24,9 +24,15 @@ def log_stuff(stuff):
 def processors4path(service, path):
     required_processing = []
     for_redis = False
+    process_args = {}
     for pathx in cfg["services"][service]["paths"]:
         if pathx in path:
             required_processing += cfg["services"][service]["paths"][pathx]["processors"]
             if "redis" in cfg["services"][service]["paths"][pathx]:
-                for_redis = True
-    return required_processing, for_redis
+                if cfg["services"][service]["paths"][pathx]["redis"] == 1:
+                    for_redis = True
+    if required_processing and cfg["services"][service]["process_args"]:
+        for processor in required_processing:
+            if cfg["services"][service]["process_args"][processor]:
+                process_args[processor] = cfg["services"][service]["process_args"][processor]
+    return required_processing, for_redis, process_args

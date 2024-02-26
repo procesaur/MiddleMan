@@ -36,12 +36,16 @@ def req2args(req, target):
 
 
 def process_args_and_send(args):
-    params, data, method, headers, cookies, target, required_processing = args
+    params, data, method, headers, cookies, target, required_processing, process_args = args
     params_o, data_o = deepcopy(params), deepcopy(data)
 
     for proc_name in required_processing:
         processor = getattr(processors, proc_name)
-        params, data = processor(params, data)
+        if proc_name in process_args:
+            p_a = process_args[proc_name]
+            params, data = processor(params, data, p_a)
+        else:
+            params, data = processor(params, data)
 
     if not params:
         params = params_o
