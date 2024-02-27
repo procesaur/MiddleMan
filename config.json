@@ -1,34 +1,48 @@
 {
-  "log": "",
-  "redis": {
-    "url": "redis://127.0.0.1",
-    "port": "6379",
-    "on": 1
-  },
-  "services": {
-    "solr": {
-      "target" : "http://127.0.0.1:8983/solr/",
-      "paths" : {
-        "select": {
-          "processors": ["sort_default"]
-        },
-        "update" : {
-          "processors": ["index_media"],
-          "redis": 0
-		  }
-        },
-	  "process_args": {
-		"index_media": {
-		  "ip": "http://127.0.0.1",
-		  "files_dir": "/var/www/html",
-		  "repo": "example_rgf",
-		  "date_field": "dcterms_issued_txt",
-		  "texase_addr": "http://127.0.0.1:5001/api/",
-		  "omeka_api_addr": "http://127.0.0.1/api/",
-		  "key_identity": "",
-		  "key_credential": ""
-		}
+   "log":"",
+   "redis":{
+      "url":"redis://127.0.0.1",
+      "port":"6379",
+      "on":1
+   },
+   "services":{
+      "solr":{
+         "target":"http://127.0.0.1:8983/solr/",
+         "paths":{
+            "select":{
+               "processors":[
+                  "sort_default"
+               ]
+            },
+            "update":{
+               "processors":[
+                  "index_media"
+               ],
+               "redis":1
+            }
+         },
+         "process_args":{
+            "index_media":{
+               "rgf/":{
+                  "files_dir":"/var/www/html",
+                  "repo":"example_rgf",
+                  "date_field":"dcterms_issued_txt",
+                  "texase_addr":"http://127.0.0.1:5001/api/",
+                  "omeka_api_addr":"http://127.0.0.1/api/",
+                  "key_identity":"",
+                  "key_credential":""
+               },
+               "minerali/":{
+                  "files_dir":"/var/www/html2",
+                  "repo":"default",
+                  "date_field":"dcterms_issued_txt",
+                  "texase_addr":"http://127.0.0.1:5001/api/",
+                  "omeka_api_addr":"http://example.com/api/",
+                  "key_identity":"",
+                  "key_credential":""
+               }
+            }
+         }
       }
-    }
-  }
+   }
 }

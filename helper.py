@@ -34,5 +34,10 @@ def processors4path(service, path):
     if required_processing and cfg["services"][service]["process_args"]:
         for processor in required_processing:
             if processor in cfg["services"][service]["process_args"]:
-                process_args[processor] = cfg["services"][service]["process_args"][processor]
+                first_key = list(cfg["services"][service]["process_args"][processor].keys())[0]
+                process_args[processor] = cfg["services"][service]["process_args"][processor][first_key]
+                for x in cfg["services"][service]["process_args"][processor]:
+                    if x in path:
+                        process_args[processor] = cfg["services"][service]["process_args"][processor][x]
+
     return required_processing, for_redis, process_args

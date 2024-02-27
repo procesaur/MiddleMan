@@ -23,7 +23,6 @@ def sort_default(params, data):
 
 def index_media(params, data, process_params):
 
-    ip = process_params["ip"]
     files_dir = process_params["files_dir"]
     repo = process_params["repo"]
     date_field = process_params["date_field"]
@@ -74,7 +73,7 @@ def index_media(params, data, process_params):
         except:
             item_id = -1
         filepaths, doc["private_media"] = get_filepaths(item_id)
-        filepaths = [x.replace(ip, files_dir) for x in filepaths]
+        filepaths = [files_dir + "/files/" + x.split("/files/")[1] for x in filepaths]
         doc["media_txt"] = []
         hasMedia = []
 
